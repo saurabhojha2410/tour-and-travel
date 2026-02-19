@@ -57,15 +57,23 @@ try {
 // ============================================
 // PRELOADER
 // ============================================
-window.addEventListener('load', () => {
-    setTimeout(() => {
-        const preloader = document.getElementById('preloader');
+function hidePreloader() {
+    const preloader = document.getElementById('preloader');
+    if (preloader && !preloader.classList.contains('hidden')) {
         preloader.classList.add('hidden');
         setTimeout(() => {
             preloader.style.display = 'none';
         }, 500);
-    }, 2000);
+    }
+}
+
+// Hide after page loads
+window.addEventListener('load', () => {
+    setTimeout(hidePreloader, 1500);
 });
+
+// Safety fallback — always hide after 4 seconds max
+setTimeout(hidePreloader, 4000);
 
 // ============================================
 // AOS INITIALIZATION
