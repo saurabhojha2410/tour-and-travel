@@ -89,6 +89,44 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ============================================
+// FAST SMOOTH SCROLL (~300ms)
+// ============================================
+function fastScrollTo(targetEl) {
+    const targetPosition = targetEl.getBoundingClientRect().top + window.scrollY - 80;
+    const startPosition = window.scrollY;
+    const distance = targetPosition - startPosition;
+    const duration = 300;
+    let startTime = null;
+
+    function easeOutCubic(t) {
+        return 1 - Math.pow(1 - t, 3);
+    }
+
+    function step(currentTime) {
+        if (!startTime) startTime = currentTime;
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        window.scrollTo(0, startPosition + distance * easeOutCubic(progress));
+        if (progress < 1) requestAnimationFrame(step);
+    }
+
+    requestAnimationFrame(step);
+}
+
+// Intercept all anchor link clicks
+document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.addEventListener('click', (e) => {
+        const targetId = link.getAttribute('href');
+        if (targetId === '#') return;
+        const targetEl = document.querySelector(targetId);
+        if (targetEl) {
+            e.preventDefault();
+            fastScrollTo(targetEl);
+        }
+    });
+});
+
+// ============================================
 // NAVBAR SCROLL EFFECTS
 // ============================================
 const navbar = document.getElementById('navbar');
